@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MaskGuard - Intelligent Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .animated-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-orb {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: orbFloat 25s infinite ease-in-out;
+    }
+
+    .floating-orb:nth-child(1) {
+      width: 800px;
+      height: 800px;
+      top: -300px;
+      right: -200px;
+      background: radial-gradient(circle, rgba(102,126,234,0.2) 0%, transparent 70%);
+      animation-delay: 0s;
+    }
+
+    .floating-orb:nth-child(2) {
+      width: 600px;
+      height: 600px;
+      bottom: -200px;
+      left: -100px;
+      background: radial-gradient(circle, rgba(118,75,162,0.2) 0%, transparent 70%);
+      animation-delay: -5s;
+    }
+
+    .floating-orb:nth-child(3) {
+      width: 400px;
+      height: 400px;
+      top: 40%;
+      left: 30%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation-delay: -10s;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(60px, 40px) scale(1.1); }
+      66% { transform: translate(-40px, 70px) scale(0.9); }
+    }
+
+    .particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      animation: particleRise 20s infinite linear;
+    }
+
+    @keyframes particleRise {
+      0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+      }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% {
+        transform: translateY(-100px) translateX(100px);
+        opacity: 0;
+      }
+    }
+
+    .navbar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 15px 50px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      animation: slideDown 0.6s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .logo-icon i {
+      font-size: 2rem;
+      color: white;
+    }
+
+    .logo-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .user-avatar {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.2rem;
+      animation: glow 2s infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 10px rgba(102, 126, 234, 0.5); }
+      50% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.8); }
+    }
+
+    .user-name {
+      color: #2d3748;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .logout-btn {
+      background: linear-gradient(135deg, #f56565 0%, #c53030 100%);
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s;
+      font-size: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logout-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px -5px #f56565;
+    }
+
+    .logout-btn:hover::before {
+      left: 100%;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 40px auto;
+      padding: 0 30px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .welcome-section {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 30px;
+      padding: 30px 40px;
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      animation: slideUp 0.6s ease-out;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .welcome-content {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .welcome-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .welcome-icon i {
+      font-size: 2.5rem;
+      color: white;
+      animation: wave 2s infinite;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(10deg); }
+      75% { transform: rotate(-10deg); }
+    }
+
+    .welcome-text h2 {
+      font-size: 2rem;
+      background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+    }
+
+    .welcome-text p {
+      color: #718096;
+      font-size: 1.1rem;
+    }
+
+    .date-badge {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 20px -5px rgba(102, 126, 234, 0.5);
+    }
+
+    .action-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .action-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 35px 25px;
+      border-radius: 25px;
+      box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      animation: cardPop 0.5s ease-out forwards;
+      opacity: 0;
+      transform: scale(0.9);
+    }
+
+    .action-card:nth-child(1) { animation-delay: 0.1s; }
+    .action-card:nth-child(2) { animation-delay: 0.2s; }
+    .action-card:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes cardPop {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .action-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .action-card:hover {
+      transform: translateY(-15px) scale(1.02);
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.4);
+    }
+
+    .action-card:hover::before {
+      left: 100%;
+    }
+
+    .action-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      transition: all 0.3s;
+    }
+
+    .action-card:hover .action-icon {
+      transform: rotate(360deg) scale(1.1);
+    }
+
+    .action-icon i {
+      font-size: 3rem;
+      color: white;
+    }
+
+    .action-card h3 {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .action-card p {
+      color: #718096;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .action-link {
+      color: #667eea;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+
+    .action-card:hover .action-link {
+      gap: 15px;
+      color: #764ba2;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 25px;
+      box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      animation: statFade 0.5s ease-out forwards;
+      opacity: 0;
+    }
+
+    .stat-card:nth-child(1) { animation-delay: 0.4s; }
+    .stat-card:nth-child(2) { animation-delay: 0.5s; }
+    .stat-card:nth-child(3) { animation-delay: 0.6s; }
+    .stat-card:nth-child(4) { animation-delay: 0.7s; }
+
+    @keyframes statFade {
+      to {
+        opacity: 1;
+      }
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(
+        transparent,
+        rgba(102, 126, 234, 0.1),
+        transparent 30%
+      );
+      animation: rotate 4s linear infinite;
+    }
+
+    @keyframes rotate {
+      to { transform: rotate(360deg); }
+    }
+
+    .stat-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-icon i {
+      font-size: 2rem;
+      color: white;
+    }
+
+    .stat-card h3 {
+      color: #718096;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-trend {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 0.9rem;
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: rgba(72, 187, 120, 0.1);
+      color: #48bb78;
+    }
+
+    .charts-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .chart-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 25px;
+      border-radius: 25px;
+      box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      animation: slideLeft 0.8s ease-out;
+    }
+
+    @keyframes slideLeft {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .chart-header h3 {
+      color: #2d3748;
+      font-size: 1.2rem;
+    }
+
+    .mini-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 100px;
+    }
+
+    .chart-bar {
+      flex: 1;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 8px 8px 0 0;
+      transition: height 0.3s;
+      animation: barGrow 1s ease-out;
+    }
+
+    @keyframes barGrow {
+      from { height: 0; }
+      to { height: var(--height); }
+    }
+
+    .activity-section {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 25px;
+      box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      animation: slideUp 0.9s ease-out;
+    }
+
+    .activity-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .activity-header h3 {
+      font-size: 1.4rem;
+      color: #2d3748;
+    }
+
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      background: rgba(247, 250, 252, 0.8);
+      border-radius: 15px;
+      transition: all 0.3s;
+      animation: slideIn 0.3s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes slideIn {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .activity-item:hover {
+      transform: translateX(10px);
+      background: white;
+    }
+
+    .activity-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #48bb78;
+      animation: pulse 2s infinite;
+    }
+
+    .activity-dot.warning {
+      background: #f56565;
+    }
+
+    .activity-content {
+      flex: 1;
+    }
+
+    .activity-title {
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .activity-time {
+      font-size: 0.85rem;
+      color: #a0aec0;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 15px 20px;
+      }
+
+      .welcome-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+      }
+
+      .charts-section {
+        grid-template-columns: 1fr;
+      }
+
+      .user-name {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-bg">
+    <div class="floating-orb"></div>
+    <div class="floating-orb"></div>
+    <div class="floating-orb"></div>
+  </div>
+
+  <div class="particles" id="particles"></div>
+
+  <div class="navbar">
+    <div class="logo">
+      <div class="logo-icon">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      <span class="logo-text">MaskGuard</span>
+    </div>
+    <div class="user-info">
+      <div class="user-avatar" id="userAvatar">A</div>
+      <span class="user-name" id="userName">Admin</span>
+      <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="welcome-section">
+      <div class="welcome-content">
+        <div class="welcome-icon">
+          <i class="fas fa-hand-sparkles"></i>
+        </div>
+        <div class="welcome-text">
+          <h2>Welcome back, <span id="welcomeName">Admin</span>!</h2>
+          <p>Here's your mask detection summary for today</p>
+        </div>
+      </div>
+      <div class="date-badge" id="currentDate">
+        <i class="far fa-calendar-alt"></i>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="action-cards">
+      <div class="action-card" onclick="location.href='/live-detection/'">
+        <div class="action-icon">
+          <i class="fas fa-video"></i>
+        </div>
+        <h3>Live Detection</h3>
+        <p>Start real-time face mask detection with AI-powered camera feed</p>
+        <div class="action-link">
+          Start Now <i class="fas fa-arrow-right"></i>
+        </div>
+      </div>
+      <div class="action-card" onclick="location.href='/records/'">
+        <div class="action-icon">
+          <i class="fas fa-database"></i>
+        </div>
+        <h3>View Records</h3>
+        <p>Browse detailed detection history with advanced filtering options</p>
+        <div class="action-link">
+          Explore <i class="fas fa-arrow-right"></i>
+        </div>
+      </div>
+      <div class="action-card" onclick="downloadRecords()">
+        <div class="action-icon">
+          <i class="fas fa-download"></i>
+        </div>
+        <h3>Download Report</h3>
+        <p>Export comprehensive analytics report in CSV format</p>
+        <div class="action-link">
+          Export <i class="fas fa-arrow-right"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <h3>Total Detections</h3>
+        <div class="stat-value" id="totalDetections">0</div>
+        <div class="stat-trend">
+          <i class="fas fa-arrow-up"></i> +12%
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h3>Mask Detected</h3>
+        <div class="stat-value" id="maskCount">0</div>
+        <div class="stat-trend" style="color: #48bb78;">
+          <i class="fas fa-arrow-up"></i> +8%
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3>No Mask</h3>
+        <div class="stat-value" id="noMaskCount">0</div>
+        <div class="stat-trend" style="color: #f56565;">
+          <i class="fas fa-arrow-down"></i> -5%
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-percentage"></i>
+        </div>
+        <h3>Compliance Rate</h3>
+        <div class="stat-value" id="complianceRate">0%</div>
+        <div class="stat-trend" style="color: #48bb78;">
+          <i class="fas fa-arrow-up"></i> +3%
+        </div>
+      </div>
+    </div>
+
+    <div class="charts-section">
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3><i class="fas fa-chart-pie"></i> Detection Distribution</h3>
+          <span>Last 7 days</span>
+        </div>
+        <div class="mini-chart" id="distributionChart"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3><i class="fas fa-chart-line"></i> Compliance Trend</h3>
+          <span>Weekly</span>
+        </div>
+        <div class="mini-chart" id="trendChart"></div>
+      </div>
+    </div>
+
+    <div class="activity-section">
+      <div class="activity-header">
+        <h3><i class="fas fa-clock"></i> Recent Activity</h3>
+        <a href="/records/" style="color: #667eea; text-decoration: none;">View All →</a>
+      </div>
+      <div class="activity-list" id="activityList"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:8000/api';
+
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 20 + 's';
+        particle.style.animationDuration = 15 + Math.random() * 15 + 's';
+        particle.style.width = Math.random() * 8 + 2 + 'px';
+        particle.style.height = particle.style.width;
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    createParticles();
+
+    function updateDate() {
+      const dateElement = document.getElementById('currentDate').querySelector('span');
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      dateElement.textContent = new Date().toLocaleDateString('en-US', options);
+    }
+
+    updateDate();
+
+    function createCharts() {
+      const distributionData = [65, 45, 80, 55, 70, 85, 90];
+      const trendData = [40, 55, 70, 65, 80, 75, 85];
+
+      const distributionChart = document.getElementById('distributionChart');
+      const trendChart = document.getElementById('trendChart');
+
+      distributionChart.innerHTML = distributionData.map(value =>
+        `<div class="chart-bar" style="height: ${value}px; --height: ${value}px;"></div>`
+      ).join('');
+
+      trendChart.innerHTML = trendData.map(value =>
+        `<div class="chart-bar" style="height: ${value}px; background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); --height: ${value}px;"></div>`
+      ).join('');
+    }
+
+    createCharts();
+
+    async function checkAuth() {
+      try {
+        const response = await fetch(`${API_URL}/auth/user/`, {
+          credentials: 'include'
+        });
+        const user = await response.json();
+        if (user && user.authenticated) {
+          document.getElementById('userName').textContent = user.username;
+          document.getElementById('welcomeName').textContent = user.username;
+          document.getElementById('userAvatar').textContent = user.username.charAt(0).toUpperCase();
+          loadStatistics();
+          loadRecentActivity();
+        } else {
+          document.getElementById('userName').textContent = 'Guest';
+          document.getElementById('welcomeName').textContent = 'Guest';
+          document.getElementById('userAvatar').textContent = 'G';
+          loadStatistics();
+          loadRecentActivity();
+        }
+      } catch (error) {
+        console.log('Guest mode enabled');
+        loadStatistics();
+        loadRecentActivity();
+      }
+    }
+
+    async function loadStatistics() {
+      try {
+        const response = await fetch(`${API_URL}/records/statistics/`, {
+          credentials: 'include'
+        });
+        const stats = await response.json();
+
+        animateValue('totalDetections', 0, stats.total_detections);
+        animateValue('maskCount', 0, stats.mask_detected);
+        animateValue('noMaskCount', 0, stats.no_mask_detected);
+
+        const complianceEl = document.getElementById('complianceRate');
+        animateValue(complianceEl, 0, stats.compliance_rate, '%');
+      } catch (error) {
+        console.error('Failed to load statistics:', error);
+      }
+    }
+
+    function animateValue(elementId, start, end, suffix = '') {
+      const element = typeof elementId === 'string' ? document.getElementById(elementId) : elementId;
+      if (!element) return;
+
+      let current = start;
+      const increment = (end - start) / 50;
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= end) {
+          element.textContent = end + suffix;
+          clearInterval(timer);
+        } else {
+          element.textContent = Math.floor(current) + suffix;
+        }
+      }, 20);
+    }
+
+    async function loadRecentActivity() {
+      try {
+        const response = await fetch(`${API_URL}/records/?limit=5`, {
+          credentials: 'include'
+        });
+        const payload = await response.json();
+        const records = Array.isArray(payload) ? payload : (payload.results || []);
+
+        const activityList = document.getElementById('activityList');
+
+        if (records.length === 0) {
+          activityList.innerHTML = '<div class="activity-item">No recent activity</div>';
+          return;
+        }
+
+        activityList.innerHTML = records.map((record, index) => {
+          const date = new Date(record.timestamp);
+          const timeAgo = getTimeAgo(date);
+          const isMask = record.status === 'mask';
+
+          return `
+            <div class="activity-item" style="animation-delay: ${index * 0.1}s">
+              <div class="activity-dot ${isMask ? '' : 'warning'}"></div>
+              <div class="activity-content">
+                <div class="activity-title">
+                  ${isMask ? '✅ Mask Detected' : '⚠️ No Mask Detected'}
+                </div>
+                <div class="activity-time">
+                  <i class="far fa-clock"></i> ${timeAgo} • Confidence: ${record.confidence?.toFixed(1)}%
+                </div>
+              </div>
+              <i class="fas fa-chevron-right" style="color: #a0aec0;"></i>
+            </div>
+          `;
+        }).join('');
+      } catch (error) {
+        console.error('Failed to load activity:', error);
+      }
+    }
+
+    function getTimeAgo(date) {
+      const seconds = Math.floor((new Date() - date) / 1000);
+
+      let interval = Math.floor(seconds / 31536000);
+      if (interval > 1) return interval + ' years ago';
+
+      interval = Math.floor(seconds / 2592000);
+      if (interval > 1) return interval + ' months ago';
+
+      interval = Math.floor(seconds / 86400);
+      if (interval > 1) return interval + ' days ago';
+
+      interval = Math.floor(seconds / 3600);
+      if (interval > 1) return interval + ' hours ago';
+
+      interval = Math.floor(seconds / 60);
+      if (interval > 1) return interval + ' minutes ago';
+
+      return Math.floor(seconds) + ' seconds ago';
+    }
+
+    async function logout() {
+      const btn = event.target.closest('button');
+      if (btn) {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+      }
+
+      try {
+        await fetch(`${API_URL}/auth/logout/`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+        localStorage.removeItem('user');
+
+        document.body.style.transition = 'opacity 0.5s';
+        document.body.style.opacity = '0';
+
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
+    }
+
+    async function downloadRecords() {
+      window.open(`${API_URL}/records/export_csv/`, '_blank');
+    }
+
+    checkAuth();
+  </script>
+</body>
+</html>

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No Mask Screenshots - Face Mask Detection System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .download-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .screenshots-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .screenshot-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .screenshot-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .screenshot-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .screenshot-info {
+            padding: 15px;
+        }
+
+        .timestamp {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .confidence {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .confidence.high {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .confidence.medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .confidence.low {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .user-info {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            margin: 50px 0;
+        }
+
+        .error {
+            text-align: center;
+            color: #ff6b6b;
+            font-size: 1.2rem;
+            margin: 50px 0;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            z-index: 1000;
+            max-width: 300px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .no-screenshots {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            margin: 50px 0;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>No Mask Screenshots</h1>
+        <p>Face Mask Detection System - Rule Violations Evidence</p>
+        <div style="margin-top: 10px;">
+            <button onclick="downloadAllScreenshots()" class="download-btn">Download All Screenshots (ZIP)</button>
+            <button onclick="toggleBulkMode()" class="download-btn" style="background: #ffc107; color: #333; margin-left: 10px;">Bulk Delete Mode</button>
+            <button onclick="deleteAllScreenshots()" class="download-btn" style="background: #dc3545; margin-left: 10px;">🗑️ Delete All Screenshots</button>
+            <div id="bulkControls" style="display: inline-block; margin-left: 10px;">
+                <label style="display: inline-flex; align-items: center; background: #f8f9fa; padding: 5px 10px; border-radius: 5px; border: 1px solid #dee2e6;">
+                    <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()" style="margin-right: 8px;">
+                    <span style="font-size: 14px; color: #333;">Select All</span>
+                </label>
+                <button onclick="deleteSelectedScreenshots()" class="download-btn" id="bulkDeleteBtn" style="background: #dc3545; margin-left: 10px; display: none;">Delete Selected (0)</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-number" id="totalScreenshots">0</div>
+            <div class="stat-label">Total Screenshots</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="todayScreenshots">0</div>
+            <div class="stat-label">Today's Violations</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="avgConfidence">0%</div>
+            <div class="stat-label">Average Confidence</div>
+        </div>
+    </div>
+
+    <div id="screenshotsContainer" class="screenshots-container">
+        <div class="loading">Loading screenshots...</div>
+    </div>
+
+    <script>
+        let screenshots = [];
+        let bulkMode = false;
+
+        // Load screenshots on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadScreenshots();
+        });
+
+        async function loadScreenshots() {
+            try {
+                const response = await fetch('/api/records/no_mask_screenshots/');
+                const data = await response.json();
+                
+                if (data.screenshots) {
+                    screenshots = data.screenshots;
+                    displayScreenshots(screenshots);
+                    updateStats(screenshots);
+                } else {
+                    showError('Failed to load screenshots');
+                }
+            } catch (error) {
+                console.error('Error loading screenshots:', error);
+                showError('Error loading screenshots');
+            }
+        }
+
+        function displayScreenshots(screenshots) {
+            const container = document.getElementById('screenshotsContainer');
+            container.innerHTML = '';
+
+            if (screenshots.length === 0) {
+                container.innerHTML = '<div class="no-screenshots">No screenshots found. No mask violations detected yet.</div>';
+                return;
+            }
+
+            screenshots.forEach(screenshot => {
+                const card = document.createElement('div');
+                card.className = 'screenshot-card';
+                
+                card.innerHTML = `
+                    <div style="position: relative;">
+                        <input type="checkbox" class="screenshot-checkbox" data-id="${screenshot.id}" style="position: absolute; top: 10px; left: 10px; z-index: 10; display: none; width: 20px; height: 20px; cursor: pointer;" onchange="updateBulkDeleteCount()">
+                        <img src="${screenshot.image_url}" alt="No Mask Detection" class="screenshot-image" style="cursor: pointer;" onclick="openScreenshotDetail(${screenshot.id})">
+                    </div>
+                    <div class="screenshot-info">
+                        <div class="timestamp">Timestamp: ${screenshot.timestamp}</div>
+                        <span class="confidence ${getConfidenceClass(screenshot.confidence)}">Confidence: ${screenshot.confidence}%</span>
+                        <div class="user-info">User: ${screenshot.user}</div>
+                        <div style="margin-top: 10px;">
+                            <button onclick="openScreenshotDetail(${screenshot.id})" style="background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 12px; margin-right: 5px;">View Details</button>
+                            <button onclick="takeAction(${screenshot.id})" style="background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 12px; margin-right: 5px;">✓ Take Action</button>
+                            <button onclick="markRejected(${screenshot.id})" style="background: #ffc107; color: #333; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 12px; margin-right: 5px;">✗ Rejected</button>
+                            <button onclick="deleteScreenshot(${screenshot.id})" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">Delete</button>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        function getConfidenceClass(confidence) {
+            if (confidence >= 80) return 'high';
+            if (confidence >= 60) return 'medium';
+            return 'low';
+        }
+
+        function updateStats(screenshots) {
+            document.getElementById('totalScreenshots').textContent = screenshots.length;
+            
+            // Calculate today's screenshots
+            const today = new Date().toDateString();
+            const todayScreenshots = screenshots.filter(s => 
+                new Date(s.timestamp).toDateString() === today
+            );
+            document.getElementById('todayScreenshots').textContent = todayScreenshots.length;
+            
+            // Calculate average confidence
+            if (screenshots.length > 0) {
+                const avgConfidence = screenshots.reduce((sum, s) => sum + s.confidence, 0) / screenshots.length;
+                document.getElementById('avgConfidence').textContent = Math.round(avgConfidence) + '%';
+            }
+        }
+
+        function downloadAllScreenshots() {
+            window.open('/api/records/download_screenshots/', '_blank');
+        }
+
+        function openScreenshotDetail(screenshotId) {
+            window.open(`/api/screenshot/?id=${screenshotId}`, '_blank');
+        }
+
+        async function deleteScreenshot(screenshotId) {
+            if (confirm('Are you sure you want to delete this screenshot? This action cannot be undone.')) {
+                try {
+                    console.log('Deleting screenshot:', screenshotId);
+                    
+                    const response = await fetch(`/api/records/${screenshotId}/delete_screenshot/`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    console.log('Response status:', response.status);
+                    const responseText = await response.text();
+                    console.log('Response text:', responseText);
+                    
+                    if (response.ok) {
+                        const data = JSON.parse(responseText);
+                        if (data.success) {
+                            alert('Screenshot deleted successfully!');
+                            loadScreenshots();
+                        } else {
+                            alert('Error: ' + data.error);
+                        }
+                    } else {
+                        alert('Failed to delete screenshot. Status: ' + response.status);
+                    }
+                } catch (error) {
+                    console.error('Delete error:', error);
+                    alert('Error deleting screenshot: ' + error.message);
+                }
+            }
+        }
+
+        function toggleBulkMode() {
+            bulkMode = !bulkMode;
+            const checkboxes = document.querySelectorAll('.screenshot-checkbox');
+            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+            const bulkControls = document.getElementById('bulkControls');
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.style.display = bulkMode ? 'block' : 'none';
+            });
+            
+            bulkControls.style.display = bulkMode ? 'inline-block' : 'none';
+            
+            if (bulkMode) {
+                showAlert('Bulk delete mode enabled. Select screenshots to delete.');
+            } else {
+                checkboxes.forEach(checkbox => checkbox.checked = false);
+                selectAllCheckbox.checked = false;
+                updateBulkDeleteCount();
+            }
+        }
+
+        function updateBulkDeleteCount() {
+            const checkedBoxes = document.querySelectorAll('.screenshot-checkbox:checked');
+            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            const allCheckboxes = document.querySelectorAll('.screenshot-checkbox');
+            const count = checkedBoxes.length;
+            
+            bulkDeleteBtn.textContent = `Delete Selected (${count})`;
+            bulkDeleteBtn.disabled = count === 0;
+            bulkDeleteBtn.style.opacity = count === 0 ? '0.5' : '1';
+            
+            selectAllCheckbox.checked = allCheckboxes.length > 0 && count === allCheckboxes.length;
+        }
+
+        async function deleteAllScreenshots() {
+            if (confirm(`Are you sure you want to delete ALL ${screenshots.length} screenshots? This action cannot be undone and will permanently remove all violation evidence.`)) {
+                try {
+                    const allIds = screenshots.map(s => s.id);
+                    
+                    const deletePromises = allIds.map(id => 
+                        fetch(`/api/records/${id}/delete_screenshot/`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': getCookie('csrftoken')
+                            }
+                        })
+                    );
+                    
+                    const responses = await Promise.all(deletePromises);
+                    const results = await Promise.all(responses.map(r => r.json()));
+                    
+                    const successfulDeletes = results.filter(r => r.success).length;
+                    const failedDeletes = results.filter(r => !r.success).length;
+                    
+                    if (successfulDeletes > 0) {
+                        alert(`Successfully deleted ${successfulDeletes} screenshot(s)!${failedDeletes > 0 ? ` Failed to delete ${failedDeletes} screenshot(s).` : ''}`);
+                        loadScreenshots();
+                    } else {
+                        alert('Failed to delete any screenshots.');
+                    }
+                    
+                } catch (error) {
+                    console.error('Delete all error:', error);
+                    alert('Error deleting all screenshots');
+                }
+            }
+        }
+
+        async function deleteSelectedScreenshots() {
+            const checkedBoxes = document.querySelectorAll('.screenshot-checkbox:checked');
+            
+            if (checkedBoxes.length === 0) {
+                alert('Please select at least one screenshot to delete.');
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to delete ${checkedBoxes.length} screenshot(s)? This action cannot be undone.`)) {
+                const screenshotIds = Array.from(checkedBoxes).map(cb => cb.dataset.id);
+                
+                try {
+                    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+                    const originalText = bulkDeleteBtn.textContent;
+                    bulkDeleteBtn.textContent = 'Deleting...';
+                    bulkDeleteBtn.disabled = true;
+                    
+                    const deletePromises = screenshotIds.map(id => 
+                        fetch(`/api/records/${id}/delete_screenshot/`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': getCookie('csrftoken')
+                            }
+                        })
+                    );
+                    
+                    const responses = await Promise.all(deletePromises);
+                    const results = await Promise.all(responses.map(r => r.json()));
+                    
+                    const successfulDeletes = results.filter(r => r.success).length;
+                    const failedDeletes = results.filter(r => !r.success).length;
+                    
+                    if (successfulDeletes > 0) {
+                        alert(`Successfully deleted ${successfulDeletes} screenshot(s)!${failedDeletes > 0 ? ` Failed to delete ${failedDeletes} screenshot(s).` : ''}`);
+                        toggleBulkMode();
+                        loadScreenshots();
+                    } else {
+                        alert('Failed to delete any screenshots.');
+                    }
+                    
+                    bulkDeleteBtn.textContent = originalText;
+                    bulkDeleteBtn.disabled = false;
+                    
+                } catch (error) {
+                    console.error('Bulk delete error:', error);
+                    alert('Error deleting screenshots');
+                    
+                    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+                    bulkDeleteBtn.textContent = 'Delete Selected (0)';
+                    bulkDeleteBtn.disabled = false;
+                }
+            }
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function showAlert(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert';
+            alertDiv.textContent = message;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 5000);
+        }
+
+        function showError(message) {
+            const container = document.getElementById('screenshotsContainer');
+            container.innerHTML = `<div class="error">${message}</div>`;
+        }
+
+        function takeAction(screenshotId) {
+            if (confirm('Are you taking action on this violation? This will mark it as "Action Taken".')) {
+                try {
+                    console.log('Taking action on screenshot:', screenshotId);
+                    
+                    // Update the screenshot record to mark action taken
+                    fetch(`/api/records/${screenshotId}/`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({
+                            'action_taken': true,
+                            'action_status': 'resolved'
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.id) {
+                            alert('Action taken successfully! This violation has been marked as resolved.');
+                            loadScreenshots(); // Refresh the list
+                        } else {
+                            alert('Error updating action status.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Action error:', error);
+                        alert('Error taking action: ' + error.message);
+                    });
+                } catch (error) {
+                    console.error('Action error:', error);
+                    alert('Error taking action: ' + error.message);
+                }
+            }
+        }
+
+        function markRejected(screenshotId) {
+            const reason = prompt('Please specify reason for rejection (e.g., False Alarm, Authorized Person, System Error):');
+            
+            if (reason !== null && reason.trim() !== '') {
+                try {
+                    console.log('Marking screenshot as rejected:', screenshotId, 'Reason:', reason);
+                    
+                    // Update the screenshot record to mark as rejected
+                    fetch(`/api/records/${screenshotId}/`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({
+                            'rejected': true,
+                            'rejection_reason': reason,
+                            'action_status': 'rejected'
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.id) {
+                            alert('Screenshot marked as rejected successfully!\nReason: ' + reason);
+                            loadScreenshots(); // Refresh the list
+                        } else {
+                            alert('Error updating rejection status.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Rejection error:', error);
+                        alert('Error marking as rejected: ' + error.message);
+                    });
+                } catch (error) {
+                    console.error('Rejection error:', error);
+                    alert('Error marking as rejected: ' + error.message);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

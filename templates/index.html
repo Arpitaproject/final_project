@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Face Mask Detection - Backend Running</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 50px;
+      max-width: 700px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    h1 {
+      color: #2d3748;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .success {
+      background: #c6f6d5;
+      color: #22543d;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+    .info-box {
+      background: #f7fafc;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 20px 0;
+      text-align: left;
+    }
+    .info-box h3 {
+      color: #2d3748;
+      margin-bottom: 15px;
+    }
+    .info-box p {
+      color: #4a5568;
+      line-height: 1.8;
+      margin: 10px 0;
+    }
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 15px 40px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 10px;
+      transition: transform 0.2s;
+    }
+    .btn:hover {
+      transform: translateY(-3px);
+    }
+    .api-links {
+      background: #edf2f7;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    .api-links a {
+      display: block;
+      color: #667eea;
+      text-decoration: none;
+      padding: 8px;
+      margin: 5px 0;
+      font-weight: 500;
+    }
+    .api-links a:hover {
+      background: #e2e8f0;
+      border-radius: 5px;
+    }
+    code {
+      background: #2d3748;
+      color: #48bb78;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🛡️ Backend Server Running!</h1>
+    
+    <div class="success">
+      ✅ Django API Server is Active
+    </div>
+    
+    <div class="info-box">
+      <h3>⚠️ Important Information</h3>
+      <p>This is the <strong>backend API server</strong>. It doesn't show web pages here.</p>
+      <p>To use the Face Mask Detection System, you need to open the <strong>frontend HTML files</strong>.</p>
+    </div>
+    
+    <div class="info-box">
+      <h3>🚀 How to Access the Application</h3>
+      <p><strong>Step 1:</strong> Close this browser tab</p>
+      <p><strong>Step 2:</strong> Go to your project folder</p>
+      <p><strong>Step 3:</strong> Open one of these files:</p>
+      <ul style="margin-left: 20px; margin-top: 10px;">
+        <li><code>START_PROJECT.html</code> (Recommended)</li>
+        <li><code>frontend/login.html</code> (Direct login)</li>
+      </ul>
+    </div>
+    
+    <div class="info-box">
+      <h3>🔐 Login Credentials</h3>
+      <p><strong>Username:</strong> <code>admin</code></p>
+      <p><strong>Password:</strong> <code>admin123</code></p>
+    </div>
+    
+    <div class="api-links">
+      <h3 style="color: #2d3748; margin-bottom: 10px;">📡 API Endpoints (For Testing)</h3>
+      <a href="/admin/" target="_blank">🔧 Django Admin Panel</a>
+      <a href="/api/" target="_blank">📊 API Root</a>
+    </div>
+    
+    <div class="info-box" style="background: #fff5f5; border: 2px solid #fc8181;">
+      <h3 style="color: #c53030;">🎯 Quick Fix</h3>
+      <p style="color: #742a2a; font-size: 1.1rem; font-weight: 600;">
+        Don't use http://localhost:8000 in browser!<br>
+        Open the HTML files from your project folder instead.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
