@@ -64,12 +64,12 @@ DB_NAME = os.environ.get('DB_NAME')
 
 DATABASES = {
     'default': {
-        'ENGINE': DB_ENGINE,
-        'NAME': DB_NAME,
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'facemask',
+        'PASSWORD': 'facemask123',
+        'HOST': 'facemask.ctyycw0ue9pp.eu-north-1.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
