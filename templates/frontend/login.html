@@ -468,7 +468,7 @@
   </div>
 
   <script>
-    const API_URL = 'http://localhost:8000/api';
+    const API_URL = 'https://config-d2d6.onrender.com/api';
 
     function createParticles() {
       const particlesContainer = document.getElementById('particles');
@@ -519,7 +519,7 @@
           loginBtn.disabled = false;
         }
       } catch (error) {
-        errorMsg.querySelector('span').textContent = 'Connection error: ' + error.message + '. Make sure you are accessing via http://localhost:8000';
+        errorMsg.querySelector('span').textContent = 'Connection error: ' + error.message + '. Make sure you are accessing via https://config-d2d6.onrender.com';
         errorMsg.classList.add('show');
         loginBtn.innerHTML = '<span>Sign In</span><i class="fas fa-arrow-right"></i>';
         loginBtn.disabled = false;
