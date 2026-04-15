@@ -250,7 +250,7 @@
 
         async function loadScreenshots() {
             try {
-                const response = await fetch('/api/records/no_mask_screenshots/');
+                const response = await fetch('/api/screenshots/');
                 const data = await response.json();
                 
                 if (data.screenshots) {
