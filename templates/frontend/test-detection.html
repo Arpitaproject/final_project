@@ -24,6 +24,7 @@
   <div id="log"></div>
 
   <script>
+    const API_URL = '/api';
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -93,7 +94,7 @@
         log('Image captured, sending to API...');
         
         // Send to backend
-        const response = await fetch('https://config-d2d6.onrender.com/api/detect/', {
+        const response = await fetch(`${API_URL}/detect/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
